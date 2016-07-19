@@ -1,8 +1,8 @@
-function [J, grad] = costFunction(theta, X, y)
-%COSTFUNCTION Compute cost and gradient for logistic regression
-%   J = COSTFUNCTION(theta, X, y) computes the cost of using theta as the
-%   parameter for logistic regression and the gradient of the cost
-%   w.r.t. to the parameters.
+function [J, grad] = costFunctionReg(theta, X, y, lambda)
+%COSTFUNCTIONREG Compute cost and gradient for logistic regression with regularization
+%   J = COSTFUNCTIONREG(theta, X, y, lambda) computes the cost of using
+%   theta as the parameter for regularized logistic regression and the
+%   gradient of the cost w.r.t. to the parameters. 
 
 % Initialize some useful values
 m = length(y); % number of training examples
@@ -16,9 +16,7 @@ grad = zeros(size(theta));
 %               You should set J to the cost.
 %               Compute the partial derivatives and set grad to the partial
 %               derivatives of the cost w.r.t. each parameter in theta
-%
-% Note: grad should have the same dimensions as theta
-%
+
 hypothesis_vector = X*theta;
 sigmoid_hypothesis_vector = sigmoid(hypothesis_vector);
 log_sigmoid_hypothesis_vector = sigmoid_hypothesis_vector;
@@ -39,9 +37,13 @@ end
 residue_y = ones(rows,cols)-y;
 second_summation_part = residue_y' * log_residue_sigmoid_hypothesis_vector;
 
-J = (first_summation_part-second_summation_part)/m;
+theta(1) = 0;
+summation_theta_squared =  theta' * theta;
 
-grad = grad + (X'*(sigmoid_hypothesis_vector-y))/m;
+
+J = (first_summation_part-second_summation_part)/m + ((lambda/2*m)*summation_theta_squared);
+
+grad = grad + (X'*(hypothesis_vector-y))/m ;
 
 
 
